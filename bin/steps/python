@@ -160,7 +160,7 @@ fi
 # Instead, we use the pip wheel to install itself, using the method described here:
 # https://github.com/pypa/pip/issues/2351#issuecomment-69994524
 PIP_WHEEL_FILENAME="pip-${PIP_VERSION}-py2.py3-none-any.whl"
-PIP_WHEEL_URL="https://lang-python.s3.amazonaws.com/common/${PIP_WHEEL_FILENAME}"
+PIP_WHEEL_URL="https://buildpacks.oss-accelerate.aliyuncs.com/python/common/${PIP_WHEEL_FILENAME}"
 PIP_WHEEL="${TMPDIR:-/tmp}/${PIP_WHEEL_FILENAME}"
 
 if ! curl -sSf "${PIP_WHEEL_URL}" -o "$PIP_WHEEL"; then
@@ -180,6 +180,11 @@ else
 fi
 
 puts-step "Installing pip ${PIP_VERSION}, setuptools ${SETUPTOOLS_VERSION} and wheel ${WHEEL_VERSION}"
+
+# Set default pypi index
+PIP_INDEX_URL="https://mirrors.aliyun.com/pypi/simple/"
+export PIP_INDEX_URL
+mcount "buildvar.PIP_INDEX_URL"
 
 /app/.heroku/python/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache \
   "${PIP_TO_INSTALL}" "setuptools==${SETUPTOOLS_VERSION}" "wheel==${WHEEL_VERSION}"
