@@ -4,7 +4,7 @@ shopt -s nullglob
 
 # The standard library.
 if [[ ! -f  /tmp/stdlib.sh ]]; then
-  curl --retry 3 -s http://buildpacks.drycc.cc/common/stdlib/stdlib.sh > /tmp/stdlib.sh
+  curl --retry 3 -s https://buildpacks.drycc.cc/common/stdlib/stdlib.sh > /tmp/stdlib.sh
 fi
 # shellcheck source=/dev/null
 source /tmp/stdlib.sh
