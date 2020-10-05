@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Remove `vendor/shunit2` (#1086).
+- Replace `BUILDPACK_VENDOR_URL` and `USE_STAGING_BINARIES` with `BUILDPACK_S3_BASE_URL` (#1085).
+
+## v181 (2020-09-29)
+
+- PyPy 2.7 and 3.6, version 7.3.2 are now available (Note: PyPy support is in beta) (#1081).
+
+## v180 (2020-09-24)
+
+- Python 3.8.6 is now available (CPython) (#1072).
+
+## v179 (2020-09-23)
+
 - Remove duplicate pipenv metric event (#1070).
 - Emit metrics for how the Python version was chosen for an app (#1069).
 - Emit Python version metric events for all builds, not just clean installs (#1066).
