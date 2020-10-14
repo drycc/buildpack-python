@@ -45,7 +45,6 @@ if [[ "${STACK}" == "cedar-14" ]]; then
   # Since Cedar-14 is EOL on 2020-11-02 it's not worth migrating it to the new bucket.
   DEFAULT_S3_BASE_URL='https://lang-python.s3.amazonaws.com'
 else
-  DEFAULT_S3_BASE_URL='https://heroku-buildpack-python.s3.amazonaws.com'
   DEFAULT_S3_BASE_URL='https://buildpacks.drycc.cc/python'
 fi
 S3_BASE_URL="${BUILDPACK_S3_BASE_URL:-${DEFAULT_S3_BASE_URL}}"
