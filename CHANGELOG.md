@@ -3,6 +3,28 @@
 ## Unreleased
 
 
+## v186 (2020-11-18)
+
+- Update the `BUILD_WITH_GEO_LIBRARIES` error message (#1121).
+- Switch NLTK feature detection away from `sp-grep` (#1119).
+- Switch Django collectstatic feature detection away from `sp-grep` (#1119).
+- Remove vendored `sp-grep` script (#1119).
+- Remove vendored `pip-diff` script (#1118).
+- Remove vendored `pip-grep` script (#1116).
+
+## v185 (2020-11-12)
+
+- Error if the unsupported `BUILD_WITH_GEO_LIBRARIES` env var is set (#1115).
+- Remove deprecated GDAL/GEOS/PROJ support (#1113).
+- Remove vendored `jq` binary (#1112).
+- Remove redundant Mercurial install step (#1111).
+- Remove support for the Cedar-14 stack (#1110).
+
+## v184 (2020-10-21)
+
+- Vendor buildpack-stdlib instead of fetching from S3 (#1100).
+- Fix metric names for metrics emitted within `sub_env` (#1099).
+
 ## v183 (2020-10-12)
 
 - Add support for Heroku-20 (#968).
