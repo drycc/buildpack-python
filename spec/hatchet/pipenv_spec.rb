@@ -10,9 +10,9 @@ RSpec.shared_examples 'builds using Pipenv with the requested Python version' do
         remote: -----> Python app detected
         remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
         remote: -----> Installing python-#{python_version}
-        remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-        remote: -----> Installing dependencies with Pipenv 2018.5.18…
-        remote:        Installing dependencies from Pipfile.lock \\(.*\\)…
+        remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+        remote: -----> Installing dependencies with Pipenv 2020.11.15
+        remote:        Installing dependencies from Pipfile.lock \\(.*\\)...
         remote: -----> Installing SQLite3
       REGEX
     end
@@ -21,7 +21,7 @@ end
 
 RSpec.describe 'Pipenv support' do
   context 'without a Pipfile.lock' do
-    let(:app) { new_app('spec/fixtures/pipenv_no_lockfile') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_no_lockfile') }
 
     it 'builds with the default Python version using just the Pipfile' do
       app.deploy do |app|
@@ -30,9 +30,9 @@ RSpec.describe 'Pipenv support' do
           remote:  !     No 'Pipfile.lock' found! We recommend you commit this into your repository.
           remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
           remote: -----> Installing python-#{DEFAULT_PYTHON_VERSION}
-          remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-          remote: -----> Installing dependencies with Pipenv 2018.5.18…
-          remote:        Installing dependencies from Pipfile…
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
+          remote:        Installing dependencies from Pipfile...
           remote: -----> Installing SQLite3
         REGEX
       end
@@ -40,7 +40,7 @@ RSpec.describe 'Pipenv support' do
   end
 
   context 'with a Pipfile.lock but no Python version specified' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_version_unspecified') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_version_unspecified') }
 
     it 'builds with the default Python version' do
       app.deploy do |app|
@@ -48,9 +48,9 @@ RSpec.describe 'Pipenv support' do
           remote: -----> Python app detected
           remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
           remote: -----> Installing python-#{DEFAULT_PYTHON_VERSION}
-          remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-          remote: -----> Installing dependencies with Pipenv 2018.5.18…
-          remote:        Installing dependencies from Pipfile.lock \\(aad8b1\\)…
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
+          remote:        Installing dependencies from Pipfile.lock \\(aad8b1\\)...
           remote: -----> Installing SQLite3
         REGEX
       end
@@ -59,20 +59,20 @@ RSpec.describe 'Pipenv support' do
 
   context 'with a Pipfile.lock containing python_version 2.7' do
     let(:allow_failure) { false }
-    let(:app) { new_app('spec/fixtures/pipenv_python_2.7', allow_failure: allow_failure) }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_2.7', allow_failure: allow_failure) }
 
     context 'when using Heroku-16 or Heroku-18', stacks: %w[heroku-16 heroku-18] do
       it 'builds with the latest Python 2.7' do
         app.deploy do |app|
           expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX))
             remote: -----> Python app detected
-            remote:  !     Python 2 has reached it's community EOL. Upgrade your Python runtime to maintain a secure application as soon as possible.
+            remote:  !     Python 2 has reached its community EOL. Upgrade your Python runtime to maintain a secure application as soon as possible.
             remote:        Learn More: https://devcenter.heroku.com/articles/python-2-7-eol-faq
             remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
             remote: -----> Installing python-#{LATEST_PYTHON_2_7}
-            remote: -----> Installing pip 9.0.2, setuptools 44.1.1 and wheel 0.34.2
-            remote: -----> Installing dependencies with Pipenv 2018.5.18…
-            remote:        Installing dependencies from Pipfile.lock \\(b8efa9\\)…
+            remote: -----> Installing pip 20.1.1, setuptools 44.1.1 and wheel 0.34.2
+            remote: -----> Installing dependencies with Pipenv 2020.11.15
+            remote:        Installing dependencies from Pipfile.lock \\(b8efa9\\)...
             remote: -----> Installing SQLite3
           REGEX
         end
@@ -99,44 +99,58 @@ RSpec.describe 'Pipenv support' do
   # Python version to be used instead, due to W-8104668.
   context 'with a Pipfile.lock containing python_version 3.5',
           skip: 'python_version mapping does not currently support 3.5' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_3.5') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_3.5') }
 
     include_examples 'builds using Pipenv with the requested Python version', LATEST_PYTHON_3_5
   end
 
   context 'with a Pipfile.lock containing python_version 3.6' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_3.6') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_3.6') }
 
     include_examples 'builds using Pipenv with the requested Python version', LATEST_PYTHON_3_6
   end
 
   context 'with a Pipfile.lock containing python_version 3.7' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_3.7') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_3.7') }
 
     include_examples 'builds using Pipenv with the requested Python version', LATEST_PYTHON_3_7
   end
 
   context 'with a Pipfile.lock containing python_version 3.8' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_3.8') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_3.8') }
 
     include_examples 'builds using Pipenv with the requested Python version', LATEST_PYTHON_3_8
   end
 
   context 'with a Pipfile.lock containing python_version 3.9' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_3.9') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_3.9') }
 
     include_examples 'builds using Pipenv with the requested Python version', LATEST_PYTHON_3_9
   end
 
   context 'with a Pipfile.lock containing python_full_version 3.9.1' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_full_version') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_full_version') }
 
-    include_examples 'builds using Pipenv with the requested Python version', '3.9.1'
+    it 'builds with the outdated Python version specified' do
+      app.deploy do |app|
+        expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX))
+          remote: -----> Python app detected
+          remote:  !     Python has released a security update! Please consider upgrading to python-#{LATEST_PYTHON_3_9}
+          remote:        Learn More: https://devcenter.heroku.com/articles/python-runtimes
+          remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
+          remote: -----> Installing python-3.9.1
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
+          remote:        Installing dependencies from Pipfile.lock \\(e13df1\\)...
+          remote: -----> Installing SQLite3
+        REGEX
+      end
+    end
   end
 
   context 'with a Pipfile.lock containing an invalid python_version',
           skip: 'unknown python_version values are currently ignored (W-8104668)' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_version_invalid', allow_failure: true) }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_version_invalid', allow_failure: true) }
 
     it 'fails the build' do
       app.deploy do |app|
@@ -150,7 +164,7 @@ RSpec.describe 'Pipenv support' do
   end
 
   context 'with a Pipfile.lock containing an invalid python_full_version' do
-    let(:app) { new_app('spec/fixtures/pipenv_python_full_version_invalid', allow_failure: true) }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_python_full_version_invalid', allow_failure: true) }
 
     it 'fails the build' do
       app.deploy do |app|
@@ -164,7 +178,7 @@ RSpec.describe 'Pipenv support' do
   end
 
   context 'when there is a both a Pipfile.lock python_version and a runtime.txt' do
-    let(:app) { new_app('spec/fixtures/pipenv_and_runtime_txt') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_and_runtime_txt') }
 
     it 'builds with the Python version from runtime.txt' do
       app.deploy do |app|
@@ -172,9 +186,9 @@ RSpec.describe 'Pipenv support' do
           remote: -----> Python app detected
           remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
           remote: -----> Installing python-#{LATEST_PYTHON_3_9}
-          remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-          remote: -----> Installing dependencies with Pipenv 2018.5.18…
-          remote:        Installing dependencies from Pipfile.lock \\(75eae0\\)…
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
+          remote:        Installing dependencies from Pipfile.lock \\(75eae0\\)...
           remote: -----> Installing SQLite3
         REGEX
       end
@@ -182,16 +196,16 @@ RSpec.describe 'Pipenv support' do
   end
 
   context 'when there is both a Pipfile.lock and a requirements.txt' do
-    let(:app) { new_app('spec/fixtures/pipenv_and_requirements_txt') }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_and_requirements_txt') }
 
     it 'builds with Pipenv rather than pip' do
       app.deploy do |app|
         expect(clean_output(app.output)).to include(<<~OUTPUT)
           remote: -----> Python app detected
           remote: -----> Installing python-#{LATEST_PYTHON_3_9}
-          remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-          remote: -----> Installing dependencies with Pipenv 2018.5.18…
-          remote:        Installing dependencies from Pipfile.lock (ef68d1)…
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
+          remote:        Installing dependencies from Pipfile.lock (ef68d1)...
           remote: -----> Installing SQLite3
         OUTPUT
       end
@@ -199,18 +213,19 @@ RSpec.describe 'Pipenv support' do
   end
 
   context 'when the Pipfile.lock is out of sync with Pipfile' do
-    let(:app) { new_app('spec/fixtures/pipenv_lockfile_out_of_sync', allow_failure: true) }
+    let(:app) { Hatchet::Runner.new('spec/fixtures/pipenv_lockfile_out_of_sync', allow_failure: true) }
 
     it 'fails the build' do
       app.deploy do |app|
-        expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX))
+        expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
           remote: -----> Python app detected
           remote: cp: cannot stat '/tmp/build_.*/requirements.txt': No such file or directory
           remote: -----> Installing python-#{DEFAULT_PYTHON_VERSION}
-          remote: -----> Installing pip 9.0.2, setuptools 47.1.1 and wheel 0.34.2
-          remote: -----> Installing dependencies with Pipenv 2018.5.18…
+          remote: -----> Installing pip 20.1.1, setuptools 47.1.1 and wheel 0.34.2
+          remote: -----> Installing dependencies with Pipenv 2020.11.15
           remote:        Your Pipfile.lock \\(aad8b1\\) is out of date. Expected: \\(ef68d1\\).
-          remote:        Aborting deploy.
+          remote:        \\[DeployException\\]: .*
+          remote:        ERROR:: Aborting deploy
         REGEX
       end
     end
